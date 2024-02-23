@@ -30,8 +30,6 @@ def main():
         )
         with gr.Row():
             with gr.Column(scale=2):
-                inp = gr.Textbox(placeholder="Type in your question.")
-                get_response_btn = gr.Button(value="Get Response")
 
                 default_prompt = gr.Textbox(
                     label="System Prompt",
@@ -40,9 +38,17 @@ def main():
                     elem_id="system-prompt",
                 )
             with gr.Column(scale=3):
-                out = gr.Textbox()
+                # out = gr.Textbox()
+                chatbot = gr.Chatbot()
+                input = gr.Textbox(
+                    placeholder="Type in your question.",
+                    value="write a haiku about kichijoji",
+                )
+                get_response_btn = gr.Button(value="Get Response")
 
-        get_response_btn.click(ask_with_context, [inp, default_prompt], out)
+        get_response_btn.click(
+            ask_with_context, [input, chatbot, default_prompt], [input, chatbot]
+        )
 
     demo.launch()
 
