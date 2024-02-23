@@ -1,6 +1,7 @@
 import asyncio
 
 import gradio as gr
+from dotenv import load_dotenv
 
 from agents.basic import ask_with_context
 
@@ -47,4 +48,5 @@ def main():
 
 
 if __name__ == "__main__":
+    load_dotenv()
     asyncio.run(main())
