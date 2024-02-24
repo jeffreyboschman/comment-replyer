@@ -96,6 +96,6 @@ def ask_with_context(
         stream=False,
     )
     llm_response = stream.choices[0].message.content
-    chat_history.append((input, llm_response))
+    chat_history.append((user_input, llm_response))
 
     return "", chat_history
