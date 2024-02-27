@@ -1,41 +1,3 @@
-from openai import OpenAI
-
-_SYSTEM_PROMPT = """
-    Please act as an expert in social media, marketing, and psychology 
-    who is hired to be our social media content assistant.
-
-    We are a Canadian couple on YouTube and Instagram who 
-    mainly make posts about our life in Tokyo, Japan. 
-
-    Our vibe is cozy, charming, polite, casual, light, bright,
-    clean, relatable, humble, genuine, and Ghibli-esque.
-
-    We are trying to respond to a comment on our YouTube video.
-    {additional_info_str}
-    Here is the comment we are replying to: 
-    `{comment}`
-
-    Respond only with a reasonable comment reply. Do not add any explanations or pleasantries.
-    """
-
-_ADDITIONAL_INFO = """
-    Here is some additional information that you can use to formulate your comment response:
-    `{additional_info}`
-    """
-
-
-def create_system_prompt(comment: str, additional_info: str):
-    additional_info_str = (
-        _ADDITIONAL_INFO.format(additional_info=additional_info)
-        if additional_info
-        else ""
-    )
-    system_prompt = _SYSTEM_PROMPT.format(
-        comment=comment, additional_info_str=additional_info_str
-    )
-    return system_prompt
-
-
 def create_flattened_chat_history_messages(
     chat_history: list[tuple[str, str]]
 ) -> list[dict[str, str]]:
@@ -116,25 +78,3 @@ def create_messages(
     input_message = [{"role": "user", "content": user_input}]
     final_messages = system_prompt_message + chat_history_messages + input_message
     return final_messages
-
-
-def ask_with_context(
-    user_input: str,
-    chat_history: list[tuple[str, str]],
-    comment: str,
-    additional_info: str,
-):
-    client = OpenAI()
-
-    system_prompt = create_system_prompt(comment, additional_info)
-    messages = create_messages(user_input, chat_history, system_prompt)
-
-    stream = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
-        messages=messages,
-        stream=False,
-    )
-    llm_response = stream.choices[0].message.content
-    chat_history.append((user_input, llm_response))
-
-    return "Try again.", chat_history
